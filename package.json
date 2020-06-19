@@ -7,12 +7,20 @@
 		"type": "github",
 		"url": "https://github.com/shardick/vscode-extension-laravel-autotranslate"
 	},
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
 	"categories": [
-		"Other"
+		"Programming Languages",
+		"Snippets"
+	],
+	"keywords": [
+		"laravel",
+		"translations",
+		"auto translate",
+		"laravel blade",
+		"blade"
 	],
 	"activationEvents": [
 		"onCommand:laravel-autotranslate.translateBladeText",
