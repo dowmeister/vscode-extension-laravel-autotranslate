@@ -1,0 +1,87 @@
+{
+	"name": "laravel-autotranslate",
+	"displayName": "laravel-autotranslate",
+	"description": "Convert strings in translated strings and add to languages files automatically",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.46.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onCommand:laravel-autotranslate.translateBladeText",
+		"onCommand:laravel-autotranslate.translatePHPCode"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "laravel-autotranslate.translateBladeText",
+				"title": "Laravel: Translate Blade text"
+			},
+			{
+				"command": "laravel-autotranslate.translatePHPCode",
+				"title": "Laravel: Translate PHP Code"
+			}
+		],
+		"menus": {
+			"editor/context": [
+				{
+					"command": "laravel-autotranslate.translateBladeText",
+					"when": "editorTextFocus"
+				},
+				{
+					"command": "laravel-autotranslate.translatePHPCode",
+					"when": "editorTextFocus"
+				}
+			]
+		},
+		"keybindings":[
+			{
+				"command": "laravel-autotranslate.translateBladeText",
+				"key": "control+alt+b"
+			},
+			{
+				"command": "laravel-autotranslate.translatePHPCode",
+				"key": "control+alt+p"
+			}
+		],
+		"configuration": {
+			"title": "Laravel Auto Translate",
+			"properties": {
+				"laravel-autotranslate.defaultLanguage": {
+					"type": "string",
+					"default": "en",
+					"title": "Default language"
+				},
+				"laravel-autotranslate.messagesFileName": {
+					"type": "string",
+					"default": "messages.php",
+					"title": "Default messages language file"
+				}
+			}
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"lint": "eslint src --ext ts",
+		"watch": "tsc -watch -p ./",
+		"pretest": "npm run compile && npm run lint",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.46.0",
+		"@types/glob": "^7.1.1",
+		"@types/mocha": "^7.0.2",
+		"@types/node": "^13.11.0",
+		"eslint": "^6.8.0",
+		"@typescript-eslint/parser": "^2.30.0",
+		"@typescript-eslint/eslint-plugin": "^2.30.0",
+		"glob": "^7.1.6",
+		"mocha": "^7.1.2",
+		"typescript": "^3.8.3",
+		"vscode-test": "^1.3.0"
+	}
+}
