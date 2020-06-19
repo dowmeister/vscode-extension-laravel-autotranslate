@@ -1,6 +1,6 @@
-# laravel-autotranslate README
+# Laravel Auto Translate
 
-This is the README for your extension "laravel-autotranslate". After writing up a brief description, we recommend including the following sections.
+VSCode extension to quickly convert Blade text and PHP code in Laravel translation system adding automatically translated string to resource file
 
 ## Features
 
