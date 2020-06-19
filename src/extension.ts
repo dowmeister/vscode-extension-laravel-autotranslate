@@ -1,7 +1,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { writeFileSync, readFileSync } from 'fs';
+import { writeFileSync, readFileSync, existsSync } from 'fs';
+import { stringify } from 'querystring';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -17,11 +18,18 @@ export function activate(context: vscode.ExtensionContext) {
 	let transateTextCommand = vscode.commands.registerCommand('laravel-autotranslate.translateBladeText', () => {
 		const editor = vscode.window.activeTextEditor;
 		let selection = editor?.selection;
-		let selectedText = editor?.document.getText(selection);
+		let selectedText = editor?.document.getText(selection) as string;
 
-		replaceText(`@lang('${selectedText}')`);
-		
-		addToLanguageFile(selectedText as string);
+		if (selectedText != '')
+		{
+			selectedText = replaceApostrophe(selectedText);
+
+			selectedText = removeNewLines(selectedText);
+
+			replaceText(`@lang('${selectedText}')`);
+			
+			addToLanguageFile(selectedText as string);
+		}
 	});
 
 	let translatePHPCodeCommand = vscode.commands.registerCommand('laravel-autotranslate.translatePHPCode', () => {
@@ -29,22 +37,42 @@ export function activate(context: vscode.ExtensionContext) {
 		let selection = editor?.selection;
 		let selectedText = editor?.document.getText(selection) as string;
 
-		// remove first and last '
-		selectedText = selectedText.replace(/^'|'$/g,'');
+		if (selectedText != '')
+		{
+			// remove first and last '
+			selectedText = selectedText.replace(/^'|'$/g,'');
+			// remove first and last "
+			selectedText = selectedText.replace(/^"|"$/g,'');
 
-		replaceText(`__('${selectedText}')`);
-		
-		addToLanguageFile(selectedText as string);
+			selectedText = replaceApostrophe(selectedText);
+			
+			selectedText = removeNewLines(selectedText);
+
+			replaceText(`__('${selectedText}')`);
+			
+			addToLanguageFile(selectedText as string);
+		}
 	});
 
 	context.subscriptions.push(transateTextCommand);
 	context.subscriptions.push(translatePHPCodeCommand);
 }
 
+function replaceApostrophe(selectedText: string)
+{
+	return selectedText.replace(/'/g, '\\');
+}
+
+function removeNewLines(selectedText: string)
+{
+	return selectedText.replace(/\n|\r/g, "");
+}
+
 function replaceText(replacedText: string) {
 	const editor = vscode.window.activeTextEditor;
 	editor?.edit(builder => {
 		builder.replace(editor.selection, replacedText);
+		editor.document.save();
 	});
 }
 
@@ -55,13 +83,22 @@ function addToLanguageFile(selectedText: string)
 	var resourcesPath = projectFolder?.uri.fsPath + "\\resources\\lang\\en\\"; 
 	var resourceFilePath = resourcesPath + 'messages.php';
 
-	var resourceContent = readFileSync(resourceFilePath, 'utf8')
+	if (existsSync(resourceFilePath))
+	{
+		var resourceContent = readFileSync(resourceFilePath, 'utf8');
 
-	var endOfArray = resourceContent.indexOf(']');
-	var newContent = resourceContent.slice(0, endOfArray-2); // assuming there is a carriage return before the ]
-	newContent += `,\r\n\t'${selectedText}' => '${selectedText}'\r\n];`;
-
-	writeFileSync(resourceFilePath, newContent);
+		// check duplicates
+		if (!resourceContent.includes(`"${selectedText}"`))
+		{
+			var endOfArray = resourceContent.indexOf(']');
+			var newContent = resourceContent.slice(0, endOfArray-2); // assuming there is a carriage return before the ]
+			newContent += `,\r\n\t"${selectedText}" => "${selectedText}"\r\n];`;
+			
+			writeFileSync(resourceFilePath, newContent);
+		}
+	}
+	else
+		vscode.window.showErrorMessage(`Laravel lang file ${resourceFilePath} not exists on disk`);
 }
 
 // this method is called when your extension is deactivated

@@ -7,7 +7,7 @@
 		"type": "github",
 		"url": "https://github.com/shardick/vscode-extension-laravel-autotranslate"
 	},
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
