@@ -2,7 +2,6 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { writeFileSync, readFileSync, existsSync } from 'fs';
-import { stringify } from 'querystring';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -26,7 +25,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 			selectedText = removeNewLines(selectedText);
 
-			replaceText(`@lang('${selectedText}')`);
+			replaceText(`@lang('messages.${selectedText}')`);
 			
 			addToLanguageFile(selectedText as string);
 		}
@@ -37,18 +36,16 @@ export function activate(context: vscode.ExtensionContext) {
 		let selection = editor?.selection;
 		let selectedText = editor?.document.getText(selection) as string;
 
-		if (selectedText != '')
+		if (selectedText !== '')
 		{
 			// remove first and last '
 			selectedText = selectedText.replace(/^'|'$/g,'');
 			// remove first and last "
 			selectedText = selectedText.replace(/^"|"$/g,'');
-
-			selectedText = replaceApostrophe(selectedText);
 			
 			selectedText = removeNewLines(selectedText);
 
-			replaceText(`__('${selectedText}')`);
+			replaceText(`__('messages.${selectedText}')`);
 			
 			addToLanguageFile(selectedText as string);
 		}
@@ -60,7 +57,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 function replaceApostrophe(selectedText: string)
 {
-	return selectedText.replace(/'/g, '\\');
+	return selectedText.replace(/'/g, '\\\'');
 }
 
 function removeNewLines(selectedText: string)

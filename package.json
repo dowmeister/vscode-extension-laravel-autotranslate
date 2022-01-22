@@ -7,7 +7,7 @@
 		"type": "github",
 		"url": "https://github.com/shardick/vscode-extension-laravel-autotranslate"
 	},
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
@@ -50,7 +50,7 @@
 				}
 			]
 		},
-		"keybindings":[
+		"keybindings": [
 			{
 				"command": "laravel-autotranslate.translateBladeText",
 				"key": "control+alt+b"
